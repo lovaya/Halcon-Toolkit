@@ -725,7 +725,7 @@ namespace Halcon_Toolkit.UI.WPF
                     {
                         imageHeight = h;
                         imageWidth = w;
-                        zoomWndFactor = (double)imageWidth / viewPort.Width;
+                        viewPort.Dispatcher.Invoke(delegate { zoomWndFactor = (double)imageWidth / viewPort.Width; });
                         setImagePart(0, 0, h, w);
                     }
                 }//if

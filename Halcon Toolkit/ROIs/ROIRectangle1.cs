@@ -2,7 +2,7 @@ using System;
 using HalconDotNet;
 
 
-namespace Halcon_Toolkit.UI
+namespace Halcon_Toolkit.ROIs
 {
 	/// <summary>
 	/// This class demonstrates one of the possible implementations for a 

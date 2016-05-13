@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using HalconDotNet;
-
+using Halcon_Toolkit.ROIs;
 
 
 namespace Halcon_Toolkit.UI.Winform

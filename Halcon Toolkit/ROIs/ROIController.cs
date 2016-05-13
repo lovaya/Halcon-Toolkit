@@ -1,10 +1,9 @@
 using System;
 using HalconDotNet;
 using System.Collections;
+using Halcon_Toolkit.UI;
 
-
-
-namespace Halcon_Toolkit.UI
+namespace Halcon_Toolkit.ROIs
 {
 
 	public delegate void FuncROIDelegate();

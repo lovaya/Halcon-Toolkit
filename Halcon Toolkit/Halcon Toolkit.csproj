@@ -66,19 +66,24 @@
     </Compile>
     <Compile Include="Image\Acquisition\IFrameGrabber.cs" />
     <Compile Include="Image\Feature\Histogram.cs" />
+    <Compile Include="Measure\MeasureAssistant.cs" />
+    <Compile Include="Measure\Measurement.cs" />
+    <Compile Include="Measure\MeasurementEdge.cs" />
+    <Compile Include="Measure\MeasurementPair.cs" />
+    <Compile Include="Measure\MeasurementResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\IHWndCtrl.cs" />
     <Compile Include="UI\Winform\FunctionPlot.cs" />
     <Compile Include="UI\GraphicsContext.cs" />
     <Compile Include="UI\HObjectEntry.cs" />
     <Compile Include="UI\Winform\HWndCtrl.cs" />
-    <Compile Include="UI\ROI.cs" />
-    <Compile Include="UI\ROICircle.cs" />
-    <Compile Include="UI\ROICircularArc.cs" />
-    <Compile Include="UI\ROIController.cs" />
-    <Compile Include="UI\ROILine.cs" />
-    <Compile Include="UI\ROIRectangle1.cs" />
-    <Compile Include="UI\ROIRectangle2.cs" />
+    <Compile Include="ROIs\ROI.cs" />
+    <Compile Include="ROIs\ROICircle.cs" />
+    <Compile Include="ROIs\ROICircularArc.cs" />
+    <Compile Include="ROIs\ROIController.cs" />
+    <Compile Include="ROIs\ROILine.cs" />
+    <Compile Include="ROIs\ROIRectangle1.cs" />
+    <Compile Include="ROIs\ROIRectangle2.cs" />
     <Compile Include="UI\WPF\HWndCtrl.cs" />
   </ItemGroup>
   <ItemGroup>

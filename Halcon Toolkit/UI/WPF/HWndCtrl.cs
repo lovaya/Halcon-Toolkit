@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Windows;
 using HalconDotNet;
+using Halcon_Toolkit.ROIs;
 
 
 namespace Halcon_Toolkit.UI.WPF

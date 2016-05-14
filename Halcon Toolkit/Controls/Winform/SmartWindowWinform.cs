@@ -31,6 +31,16 @@ namespace Halcon_Toolkit.Controls.Winform
             HalconCtrl.repaint();
         }
 
+        public void AddSingleObject(HObject obj)
+        {
+            HalconCtrl.clearList();
+            using (var image = new HImage(obj))
+            {
+                HalconCtrl.addIconicVar(image);
+                HalconCtrl.repaint();
+            }
+        }
+
         public void InitHalconWindow()
         {
             HalconCtrl = new HWndCtrl(DisplayWindow);

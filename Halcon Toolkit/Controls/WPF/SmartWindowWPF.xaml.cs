@@ -35,6 +35,16 @@ namespace Halcon_Toolkit.Controls.WPF
             HalconCtrl.repaint();
         }
 
+        public void AddSingleObject(HObject obj)
+        {
+            HalconCtrl.clearList();
+            using (var image = new HImage(obj))
+            {
+                HalconCtrl.addIconicVar(image);
+                HalconCtrl.repaint();
+            }
+        }
+
         private void HWindowControlWPF_OnHInitWindow(object sender, EventArgs e)
         {
             HalconCtrl = new HWndCtrl(DisplayWindow);

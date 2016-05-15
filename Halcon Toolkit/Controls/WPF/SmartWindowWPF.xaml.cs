@@ -6,7 +6,7 @@ using Halcon_Toolkit.UI.WPF;
 namespace Halcon_Toolkit.Controls.WPF
 {
     /// <summary>
-    /// SmartWindowWPF.xaml 的交互逻辑
+    /// Interaction logic for UserControl2.xaml
     /// </summary>
     public partial class SmartWindowWPF : UserControl
     {

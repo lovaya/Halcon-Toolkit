@@ -61,9 +61,13 @@
     <Compile Include="Controls\Winform\SmartWindowWinform.Designer.cs">
       <DependentUpon>SmartWindowWinform.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\WPF\HistogramChartWPF.xaml.cs">
+      <DependentUpon>HistogramChartWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\WPF\SmartWindowWPF.xaml.cs">
       <DependentUpon>SmartWindowWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Image\Acquisition\FrameGrabber.cs" />
     <Compile Include="Image\Acquisition\IFrameGrabber.cs" />
     <Compile Include="Image\Feature\Histogram.cs" />
     <Compile Include="Measure\MeasureAssistant.cs" />
@@ -90,6 +94,10 @@
     <Folder Include="Interop\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\WPF\HistogramChartWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\WPF\SmartWindowWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

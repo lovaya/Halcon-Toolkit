@@ -145,10 +145,10 @@ namespace Halcon_Toolkit.UI.WPF
         {
             viewPort = view;
             stateView = MODE_VIEW_NONE;
-            windowWidth = viewPort.Width;
-            windowHeight = viewPort.Height;
+            windowWidth = viewPort.ActualWidth;
+            windowHeight = viewPort.ActualHeight;
 
-            zoomWndFactor = (double)imageWidth / viewPort.Width;
+            zoomWndFactor = (double)imageWidth / viewPort.ActualWidth;
             zoomAddOn = Math.Pow(0.9, 5);
             zoomWndSize = 150;
 
@@ -160,9 +160,10 @@ namespace Halcon_Toolkit.UI.WPF
 
             dispROI = MODE_INCLUDE_ROI;//1;
 
-            viewPort.HMouseUp += new HalconDotNet.HMouseEventHandlerWPF(this.mouseUp);
-            viewPort.HMouseDown += new HalconDotNet.HMouseEventHandlerWPF(this.mouseDown);
-            viewPort.HMouseMove += new HalconDotNet.HMouseEventHandlerWPF(this.mouseMoved);
+            //viewPort.HMouseUp += new HalconDotNet.HMouseEventHandlerWPF(this.mouseUp);
+            //viewPort.HMouseDown += new HalconDotNet.HMouseEventHandlerWPF(this.mouseDown);
+            //viewPort.HMouseMove += new HalconDotNet.HMouseEventHandlerWPF(this.mouseMoved);
+            //viewPort.HMouseWheel += new HalconDotNet.HMouseEventHandlerWPF(this.mouseWheel);
 
             addInfoDelegate = new FuncDelegate(dummyV);
             NotifyIconObserver = new IconicDelegate(dummy);
@@ -173,6 +174,30 @@ namespace Halcon_Toolkit.UI.WPF
             mGC.gcNotification = new GCDelegate(exceptionGC);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="b"></param>
+        public void SetManualMode(bool b)
+        {
+            if (b)
+            {
+                setViewState(MODE_VIEW_MOVE);
+                viewPort.HMouseUp += new HalconDotNet.HMouseEventHandlerWPF(this.mouseUp);
+                viewPort.HMouseDown += new HalconDotNet.HMouseEventHandlerWPF(this.mouseDown);
+                viewPort.HMouseMove += new HalconDotNet.HMouseEventHandlerWPF(this.mouseMoved);
+                viewPort.HMouseWheel += new HalconDotNet.HMouseEventHandlerWPF(this.mouseWheel);
+            }
+            else
+            {
+                setViewState(MODE_VIEW_NONE);
+                viewPort.HMouseUp -= new HalconDotNet.HMouseEventHandlerWPF(this.mouseUp);
+                viewPort.HMouseDown -= new HalconDotNet.HMouseEventHandlerWPF(this.mouseDown);
+                viewPort.HMouseMove -= new HalconDotNet.HMouseEventHandlerWPF(this.mouseMoved);
+                viewPort.HMouseWheel -= new HalconDotNet.HMouseEventHandlerWPF(this.mouseWheel);
+            }
+
+        }
 
         /// <summary>
         /// Registers an instance of an ROIController with this window 
@@ -271,7 +296,6 @@ namespace Halcon_Toolkit.UI.WPF
         {
             double lengthC, lengthR;
             double percentC, percentR;
-            int lenC, lenR;
 
             percentC = (x - ImgCol1) / (ImgCol2 - ImgCol1);
             percentR = (y - ImgRow1) / (ImgRow2 - ImgRow1);
@@ -285,9 +309,6 @@ namespace Halcon_Toolkit.UI.WPF
             ImgRow1 = y - lengthR * percentR;
             ImgRow2 = y + lengthR * (1 - percentR);
 
-            lenC = (int)Math.Round(lengthC);
-            lenR = (int)Math.Round(lengthR);
-
             Thickness rect = viewPort.ImagePart;
             rect.Left = (int)Math.Round(ImgCol1);
             rect.Top = (int)Math.Round(ImgRow1);
@@ -295,7 +316,8 @@ namespace Halcon_Toolkit.UI.WPF
             rect.Bottom = (int)Math.Round(ImgRow2);
             viewPort.ImagePart = rect;
 
-            zoomWndFactor *= scale;
+            //zoomWndFactor *= scale;
+            zoomWndFactor = (rect.Right - rect.Left) / viewPort.ActualWidth;
             repaint();
         }
 
@@ -320,7 +342,7 @@ namespace Halcon_Toolkit.UI.WPF
             midPointX = ImgCol1;
             midPointY = ImgRow1;
 
-            zoomWndFactor = (double)imageWidth / viewPort.Width;
+            zoomWndFactor = (double)imageWidth / viewPort.ActualWidth;
             zoomImage(midPointX, midPointY, scaleFactor);
         }
 
@@ -339,18 +361,18 @@ namespace Halcon_Toolkit.UI.WPF
             viewPort.Width = (int)(ImgCol2 * scale);
             viewPort.Height = (int)(ImgRow2 * scale);
 
-            zoomWndFactor = ((double)imageWidth / viewPort.Width);
+            zoomWndFactor = ((double)imageWidth / viewPort.ActualWidth);
         }
 
         /// <summary>
         /// Recalculates the image-window-factor, which needs to be added to 
         /// the scale factor for zooming an image. This way the zoom gets 
         /// adjusted to the window-image relation, expressed by the equation 
-        /// imageWidth/viewPort.Width.
+        /// imageWidth/viewPort.ActualWidth.
         /// </summary>
         public void setZoomWndFactor()
         {
-            zoomWndFactor = ((double)imageWidth / viewPort.Width);
+            zoomWndFactor = ((double)imageWidth / viewPort.ActualWidth);
         }
 
         /// <summary>
@@ -364,15 +386,15 @@ namespace Halcon_Toolkit.UI.WPF
         /*******************************************************************/
         private void moveImage(double motionX, double motionY)
         {
-            ImgRow1 += -motionY;
-            ImgRow2 += -motionY;
+            ImgRow1 += -motionY * zoomWndFactor;
+            ImgRow2 += -motionY * zoomWndFactor;
 
-            ImgCol1 += -motionX;
-            ImgCol2 += -motionX;
+            ImgCol1 += -motionX * zoomWndFactor;
+            ImgCol2 += -motionX * zoomWndFactor;
 
             Thickness rect = viewPort.ImagePart;
-            rect.Left = (int)Math.Round(ImgCol1);
-            rect.Top = (int)Math.Round(ImgRow1);
+            rect.Left = ImgCol1/*(int)Math.Round(ImgCol1)*/;
+            rect.Top = ImgRow1/*(int)Math.Round(ImgRow1)*/;
             viewPort.ImagePart = rect;
 
             repaint();
@@ -390,7 +412,7 @@ namespace Halcon_Toolkit.UI.WPF
             ImgRow2 = imageHeight;
             ImgCol2 = imageWidth;
 
-            zoomWndFactor = (double)imageWidth / viewPort.Width;
+            zoomWndFactor = (double)imageWidth / viewPort.ActualWidth;
 
             Thickness rect = viewPort.ImagePart;
             rect.Left = (int)ImgCol1;
@@ -411,7 +433,7 @@ namespace Halcon_Toolkit.UI.WPF
             ImgRow2 = imageHeight;
             ImgCol2 = imageWidth;
 
-            zoomWndFactor = (double)imageWidth / viewPort.Width;
+            zoomWndFactor = (double)imageWidth / viewPort.ActualWidth;
 
             Thickness rect = viewPort.ImagePart;
 
@@ -445,13 +467,13 @@ namespace Halcon_Toolkit.UI.WPF
                         startX = e.X;
                         startY = e.Y;
                         break;
-                    case MODE_VIEW_ZOOM:
-                        if (e.Button == System.Windows.Input.MouseButton.Left)
-                            scale = 0.9;
-                        else
-                            scale = 1 / 0.9;
-                        zoomImage(e.X, e.Y, scale);
-                        break;
+                    //case MODE_VIEW_ZOOM:
+                    //    if (e.Button == System.Windows.Input.MouseButton.Left)
+                    //        scale = 0.9;
+                    //    else
+                    //        scale = 1 / 0.9;
+                    //    zoomImage(e.X, e.Y, scale);
+                    //    break;
                     case MODE_VIEW_NONE:
                         break;
                     case MODE_VIEW_ZOOMWINDOW:
@@ -476,8 +498,8 @@ namespace Halcon_Toolkit.UI.WPF
             HOperatorSet.SetSystem("border_width", 10);
             ZoomWindow = new HWindow();
 
-            posX = ((X - ImgCol1) / (ImgCol2 - ImgCol1)) * viewPort.Width;
-            posY = ((Y - ImgRow1) / (ImgRow2 - ImgRow1)) * viewPort.Height;
+            posX = ((X - ImgCol1) / (ImgCol2 - ImgCol1)) * viewPort.ActualWidth;
+            posY = ((Y - ImgRow1) / (ImgRow2 - ImgRow1)) * viewPort.ActualHeight;
 
             zoomZone = (int)((zoomWndSize / 2) * zoomWndFactor * zoomAddOn);
             ZoomWindow.OpenWindow((int)posY - (zoomWndSize / 2), (int)posX - (zoomWndSize / 2),
@@ -528,8 +550,8 @@ namespace Halcon_Toolkit.UI.WPF
                 if (((int)motionX != 0) || ((int)motionY != 0))
                 {
                     moveImage(motionX, motionY);
-                    startX = e.X - motionX;
-                    startY = e.Y - motionY;
+                    startX = e.X /*- motionX*/;
+                    startY = e.Y /*- motionY*/;
                 }
             }
             else if (stateView == MODE_VIEW_ZOOMWINDOW)
@@ -538,8 +560,8 @@ namespace Halcon_Toolkit.UI.WPF
                 ZoomWindow.ClearWindow();
 
 
-                posX = ((e.X - ImgCol1) / (ImgCol2 - ImgCol1)) * viewPort.Width;
-                posY = ((e.Y - ImgRow1) / (ImgRow2 - ImgRow1)) * viewPort.Height;
+                posX = ((e.X - ImgCol1) / (ImgCol2 - ImgCol1)) * viewPort.ActualWidth;
+                posY = ((e.Y - ImgRow1) / (ImgRow2 - ImgRow1)) * viewPort.ActualHeight;
                 zoomZone = (zoomWndSize / 2) * zoomWndFactor * zoomAddOn;
 
                 ZoomWindow.SetWindowExtents((int)posY - (zoomWndSize / 2),
@@ -552,6 +574,17 @@ namespace Halcon_Toolkit.UI.WPF
                 HSystem.SetSystem("flush_graphic", "true");
                 ZoomWindow.DispLine(-100.0, -100.0, -100.0, -100.0);
             }
+        }
+
+        /*******************************************************************/
+        private void mouseWheel(object sender, HalconDotNet.HMouseEventArgsWPF e)
+        {
+            double scale;
+            if (e.Delta > 0)
+                scale = 0.9;
+            else
+                scale = 1 / 0.9;
+            zoomImage(e.X, e.Y, scale);
         }
 
         /// <summary>
@@ -726,7 +759,10 @@ namespace Halcon_Toolkit.UI.WPF
                     {
                         imageHeight = h;
                         imageWidth = w;
-                        viewPort.Dispatcher.Invoke(delegate { zoomWndFactor = (double)imageWidth / viewPort.Width; });
+                        viewPort.Dispatcher.Invoke(new Action(delegate
+                        {
+                            zoomWndFactor = (double)imageWidth / viewPort.ActualWidth;
+                        }));
                         setImagePart(0, 0, h, w);
                     }
                 }//if
